@@ -49,16 +49,17 @@ func (s *APIServer) handleLogin(w http.ResponseWriter, r *http.Request) error {
 func (s *APIServer) handleAccount(w http.ResponseWriter, r *http.Request) error {
 
 	if r.Method == "GET" {
-		return s.handleGetAccount(w, r)
+		return s.handleGetAccount(w)
 	}
+
 	if r.Method == "POST" {
-		return s.handleCreateAccount(w, r)
+		return s.handleRegisterAccount(w, r)
 	}
 
 	return fmt.Errorf("method not allowed %s", r.Method)
 }
 
-func (s *APIServer) handleGetAccount(w http.ResponseWriter, r *http.Request) error {
+func (s *APIServer) handleGetAccount(w http.ResponseWriter) error {
 	accounts, err := s.store.GetAccounts()
 
 	if err != nil {
@@ -66,6 +67,40 @@ func (s *APIServer) handleGetAccount(w http.ResponseWriter, r *http.Request) err
 	}
 	return utils.WriteJSON(w, http.StatusOK, accounts)
 }
+
+func (s *APIServer) handleRegisterAccount(w http.ResponseWriter, r *http.Request) error {
+
+	req := new(types.RegisterAccountRequest)
+	// createAccountReq := CreateAccountRequest{}
+	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+		return err
+	}
+
+	account, err := types.NewAccount(req.FirstName, req.LastName, req.Password)
+	if err != nil {
+		return err
+	}
+
+	if err := s.store.CreateAccount(account); err != nil {
+		return nil
+	}
+
+	tokenString, err := createJWT(account)
+
+	if err != nil {
+		return err
+	}
+
+	resp := types.RegisterAccountResponse{
+		Number:    account.Number,
+		FirstName: account.FirstName,
+		Lastname:  account.LastName,
+		Token:     tokenString,
+	}
+
+	return utils.WriteJSON(w, http.StatusOK, resp)
+}
+
 func (s *APIServer) handleGetAccountByID(w http.ResponseWriter, r *http.Request) error {
 
 	if r.Method == "GET" {
@@ -90,33 +125,6 @@ func (s *APIServer) handleGetAccountByID(w http.ResponseWriter, r *http.Request)
 	}
 
 	return fmt.Errorf("method not allowed %s", r.Method)
-}
-
-func (s *APIServer) handleCreateAccount(w http.ResponseWriter, r *http.Request) error {
-	req := new(types.CreateAccountRequest)
-	// createAccountReq := CreateAccountRequest{}
-	if err := json.NewDecoder(r.Body).Decode(req); err != nil {
-		return err
-	}
-
-	account, err := types.NewAccount(req.FirstName, req.LastName, req.Password)
-	if err != nil {
-		return err
-	}
-
-	if err := s.store.CreateAccount(account); err != nil {
-		return nil
-	}
-
-	// tokenString, err := createJWT(account)
-
-	// if err != nil {
-	// 	return err
-	// }
-
-	// fmt.Println("JWT token: ", tokenString)
-
-	return utils.WriteJSON(w, http.StatusOK, account)
 }
 
 func (s *APIServer) handleDeleteAccount(w http.ResponseWriter, r *http.Request) error {

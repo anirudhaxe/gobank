@@ -6,14 +6,14 @@ import (
 	"time"
 )
 
-type LoginResponse struct {
-	Number int64  `json:"number"`
-	Token  string `json:"token"`
-}
-
 type LoginRequest struct {
 	Number   int64  `json:"number"`
 	Password string `json:"password"`
+}
+
+type LoginResponse struct {
+	Number int64  `json:"number"`
+	Token  string `json:"token"`
 }
 
 type TransferRequest struct {
@@ -21,10 +21,17 @@ type TransferRequest struct {
 	Amount    int `json:"amount"`
 }
 
-type CreateAccountRequest struct {
+type RegisterAccountRequest struct {
 	FirstName string `json:"firstname"`
 	LastName  string `json:"lastname"`
 	Password  string `json:"password"`
+}
+
+type RegisterAccountResponse struct {
+	Number    int64  `json:"number"`
+	FirstName string `json:"firstname"`
+	Lastname  string `json:"lastname"`
+	Token     string `json:"token"`
 }
 
 type Account struct {
