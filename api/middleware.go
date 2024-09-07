@@ -36,14 +36,14 @@ func withJWTAuth(handlerFunc http.HandlerFunc, s storage.Storage) http.HandlerFu
 			return
 		}
 
-		userID, err := utils.GetID(r)
+		accountNumber, err := utils.GetAccountNumber(r)
 
 		if err != nil {
 			permissionDenied(w)
 			return
 		}
 
-		account, err := s.GetAccountByID(userID)
+		account, err := s.GetAccountByNumber(accountNumber)
 
 		if err != nil {
 			permissionDenied(w)

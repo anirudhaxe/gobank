@@ -104,35 +104,40 @@ func (s *APIServer) handleRegisterAccount(w http.ResponseWriter, r *http.Request
 	return utils.WriteJSON(w, http.StatusOK, resp)
 }
 
-func (s *APIServer) handleGetAccountByID(w http.ResponseWriter, r *http.Request) error {
+func (s *APIServer) handleAccountByNumber(w http.ResponseWriter, r *http.Request) error {
 
 	if r.Method == "GET" {
 
-		id, err := utils.GetID(r)
-
-		if err != nil {
-			return err
-		}
-
-		account, err := s.store.GetAccountByID(id)
-
-		if err != nil {
-			return err
-		}
-
-		return utils.WriteJSON(w, http.StatusOK, account)
+		return s.handleGetAccountByNumber(w, r)
 	}
 
 	if r.Method == "DELETE" {
-		return s.handleDeleteAccount(w, r)
+		return s.handleDeleteAccountByNumber(w, r)
 	}
 
 	return fmt.Errorf("method not allowed %s", r.Method)
 }
 
-func (s *APIServer) handleDeleteAccount(w http.ResponseWriter, r *http.Request) error {
+func (s *APIServer) handleGetAccountByNumber(w http.ResponseWriter, r *http.Request) error {
 
-	id, err := utils.GetID(r)
+	accountNumber, err := utils.GetAccountNumber(r)
+
+	if err != nil {
+		return err
+	}
+
+	account, err := s.store.GetAccountByNumber(accountNumber)
+
+	if err != nil {
+		return err
+	}
+
+	return utils.WriteJSON(w, http.StatusOK, account)
+}
+
+func (s *APIServer) handleDeleteAccountByNumber(w http.ResponseWriter, r *http.Request) error {
+
+	id, err := utils.GetAccountNumber(r)
 
 	if err != nil {
 		return err

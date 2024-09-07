@@ -20,16 +20,16 @@ func MakeHTTPHandleFunc(f apiFunc) http.HandlerFunc {
 	}
 }
 
-func GetID(r *http.Request) (int, error) {
-	idStr := mux.Vars(r)["id"]
+func GetAccountNumber(r *http.Request) (int, error) {
+	accNumberStr := mux.Vars(r)["number"]
 
-	id, err := strconv.Atoi(idStr)
+	accountNumber, err := strconv.Atoi(accNumberStr)
 
 	if err != nil {
-		return id, fmt.Errorf("invalid id given %s", idStr)
+		return accountNumber, fmt.Errorf("invalid account number given %s", accNumberStr)
 	}
 
-	return id, nil
+	return accountNumber, nil
 }
 
 func WriteJSON(w http.ResponseWriter, status int, v any) error {
