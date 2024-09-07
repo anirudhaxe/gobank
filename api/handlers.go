@@ -137,17 +137,17 @@ func (s *APIServer) handleGetAccountByNumber(w http.ResponseWriter, r *http.Requ
 
 func (s *APIServer) handleDeleteAccountByNumber(w http.ResponseWriter, r *http.Request) error {
 
-	id, err := utils.GetAccountNumber(r)
+	accountNumber, err := utils.GetAccountNumber(r)
 
 	if err != nil {
 		return err
 	}
 
-	if err := s.store.DeleteAccount(id); err != nil {
+	if err := s.store.DeleteAccount(accountNumber); err != nil {
 		return err
 	}
 
-	return utils.WriteJSON(w, http.StatusOK, map[string]int{"deleted": id})
+	return utils.WriteJSON(w, http.StatusOK, map[string]int{"deleted": accountNumber})
 }
 
 func (s *APIServer) handleTransfer(w http.ResponseWriter, r *http.Request) error {
