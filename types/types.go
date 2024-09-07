@@ -12,8 +12,10 @@ type LoginRequest struct {
 }
 
 type LoginResponse struct {
-	Number int64  `json:"number"`
-	Token  string `json:"token"`
+	Number    int64  `json:"number"`
+	FirstName string `json:"firstname"`
+	Lastname  string `json:"lastname"`
+	Token     string `json:"token"`
 }
 
 type TransferRequest struct {

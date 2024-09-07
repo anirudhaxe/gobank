@@ -16,6 +16,7 @@ func (s *APIServer) handleLogin(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	var req types.LoginRequest
+
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		return err
 	}
@@ -26,7 +27,7 @@ func (s *APIServer) handleLogin(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	fmt.Printf("%+v\n", acc)
+	// fmt.Printf("%+v\n", acc)
 
 	if !acc.ValidatePassword(req.Password) {
 		return fmt.Errorf("not authenticated")
@@ -39,8 +40,10 @@ func (s *APIServer) handleLogin(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	resp := types.LoginResponse{
-		Token:  token,
-		Number: acc.Number,
+		Number:    acc.Number,
+		FirstName: acc.FirstName,
+		Lastname:  acc.LastName,
+		Token:     token,
 	}
 
 	return utils.WriteJSON(w, http.StatusOK, resp)
