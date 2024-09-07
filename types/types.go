@@ -18,6 +18,12 @@ type LoginResponse struct {
 	Token     string `json:"token"`
 }
 
+type GetAccountsResponse struct {
+	FirstName string `json:"firstname"`
+	LastName  string `json:"lastname"`
+	Number    int64  `json:"number"`
+}
+
 type TransferRequest struct {
 	ToAccount int `json:"toAccount"`
 	Amount    int `json:"amount"`

@@ -63,12 +63,27 @@ func (s *APIServer) handleAccount(w http.ResponseWriter, r *http.Request) error 
 }
 
 func (s *APIServer) handleGetAccount(w http.ResponseWriter) error {
+
 	accounts, err := s.store.GetAccounts()
 
 	if err != nil {
 		return err
 	}
-	return utils.WriteJSON(w, http.StatusOK, accounts)
+
+	responseAccounts := make([]*types.GetAccountsResponse, 0, len(accounts))
+
+	for _, account := range accounts {
+
+		responseAccount := &types.GetAccountsResponse{
+			FirstName: account.FirstName,
+			LastName:  account.LastName,
+			Number:    account.Number,
+		}
+
+		responseAccounts = append(responseAccounts, responseAccount)
+	}
+
+	return utils.WriteJSON(w, http.StatusOK, responseAccounts)
 }
 
 func (s *APIServer) handleRegisterAccount(w http.ResponseWriter, r *http.Request) error {
