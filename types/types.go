@@ -25,8 +25,8 @@ type GetAccountsResponse struct {
 }
 
 type TransferRequest struct {
-	ToAccount int `json:"toAccount"`
-	Amount    int `json:"amount"`
+	ToAccountNumber int64 `json:"toAccountNumber"`
+	Amount          int64 `json:"amount"`
 }
 
 type RegisterAccountRequest struct {

@@ -166,11 +166,55 @@ func (s *APIServer) handleDeleteAccountByNumber(w http.ResponseWriter, r *http.R
 }
 
 func (s *APIServer) handleTransfer(w http.ResponseWriter, r *http.Request) error {
+
 	transferReq := new(types.TransferRequest)
+
 	if err := json.NewDecoder(r.Body).Decode(transferReq); err != nil {
 		return err
 	}
+
+	// fmt.Println(transferReq.ToAccountNumber,reflect.TypeOf(transferReq.ToAccountNumber))
+
+	accountNumber, err := utils.GetAccountNumber(r)
+
+	if err != nil {
+		return err
+	}
+
+	fromAccount, err := s.store.GetAccountByNumber(accountNumber)
+
+	if err != nil {
+		return err
+	}
+
+	if fromAccount.Number == transferReq.ToAccountNumber {
+		return fmt.Errorf("to account number not valid")
+	}
+
+	if fromAccount.Balance < transferReq.Amount {
+		return fmt.Errorf("you dont have enough balance to complete the transaction")
+	}
+
+	toAccount, err := s.store.GetAccountByNumber(int(transferReq.ToAccountNumber))
+
+	if err != nil {
+		return err
+	}
+
+	// todo: refactor following operation so that these two queries are completed in a transaction
+	err = s.store.UpdateAccountBalanceByNumber(fromAccount.Balance-transferReq.Amount, fromAccount.Number)
+
+	if err != nil {
+		return err
+	}
+
+	err = s.store.UpdateAccountBalanceByNumber(toAccount.Balance+transferReq.Amount, toAccount.Number)
+
+	if err != nil {
+		return err
+	}
+
 	defer r.Body.Close()
 
-	return utils.WriteJSON(w, http.StatusOK, transferReq)
+	return utils.WriteJSON(w, http.StatusOK, "amount transferred")
 }

@@ -27,7 +27,7 @@ func (s *APIServer) Run() {
 	router.HandleFunc("/login", utils.MakeHTTPHandleFunc(s.handleLogin))
 	router.HandleFunc("/account", utils.MakeHTTPHandleFunc(s.handleAccount))
 	router.HandleFunc("/account/{number}", withJWTAuth(utils.MakeHTTPHandleFunc(s.handleAccountByNumber), s.store))
-	router.HandleFunc("/transfer", utils.MakeHTTPHandleFunc(s.handleTransfer))
+	router.HandleFunc("/transfer/{number}", withJWTAuth(utils.MakeHTTPHandleFunc(s.handleTransfer), s.store))
 
 	log.Println("JSON API server running on port", s.listenAddr)
 
