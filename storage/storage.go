@@ -48,9 +48,9 @@ func (s *PostgresStore) CreateAccountTable() error {
 				id serial primary key,
 				first_name varchar(50),
 				last_name varchar(50),
-				number serial,
+				number BIGINT,
 				encrypted_password varchar(100),
-				balance serial,
+				balance BIGINT,
 				created_at timestamp
 				)`
 

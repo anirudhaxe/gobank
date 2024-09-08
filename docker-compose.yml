@@ -1,7 +1,9 @@
 # This docker compose is only for development environment which uses air for live reloading
-version: "3.8"
 services:
   api:
+    container_name: gobank-api
+    depends_on:
+      - db
     build:
       context: .
       # Correct the path to your Dockerfile
@@ -12,3 +14,26 @@ services:
     # Important to bind/mount your codebase dir to /app dir for live reload
     volumes:
       - ./:/app
+  db:
+    container_name: gobank-db
+    image: postgres
+    restart: always
+    # set shared memory limit when using docker-compose
+    shm_size: 128mb
+    # or set shared memory limit when deploy via swarm stack
+    #volumes:
+    #  - type: tmpfs
+    #    target: /dev/shm
+    #    tmpfs:
+    #      size: 134217728 # 128*2^20 bytes = 128Mb
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: gobank
+
+  nocodb:
+    container_name: nocodb
+    image: nocodb/nocodb
+    restart: always
+    ports:
+      - 8080:8080
