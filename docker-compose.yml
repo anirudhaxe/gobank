@@ -1,0 +1,14 @@
+# This docker compose is only for development environment which uses air for live reloading
+version: "3.8"
+services:
+  api:
+    build:
+      context: .
+      # Correct the path to your Dockerfile
+      # dockerfile: Dockerfile
+      target: development
+    ports:
+      - 3000:3000
+    # Important to bind/mount your codebase dir to /app dir for live reload
+    volumes:
+      - ./:/app

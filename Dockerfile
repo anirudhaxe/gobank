@@ -1,3 +1,24 @@
+# Development stage
+FROM golang:1.22-alpine AS development
+
+WORKDIR /app
+
+# Install Air
+RUN go install github.com/air-verse/air@latest
+
+# Copy go mod and sum files
+COPY go.* ./
+
+# Download all dependencies
+RUN go mod download
+
+# Copy the source code
+COPY . .
+
+# Run Air for hot reloading
+CMD ["air", "-c", ".air.toml"]
+
+# Production stage
 # BUILDER
 FROM golang:1.22-alpine AS builder
 
