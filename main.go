@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"log"
 
 	"github.com/anirudhchy/gobank/api"
@@ -9,11 +10,21 @@ import (
 )
 
 func main() {
-	err := godotenv.Load()
 
-	if err != nil {
-		log.Fatal("error loading .env")
+	seed := flag.Bool("production", false, "production flag")
+
+	flag.Parse()
+
+	if !*seed {
+
+		err := godotenv.Load()
+
+		if err != nil {
+			log.Fatal("error loading .env")
+		}
+
 	}
+
 	// constructor that initializes the connection with db
 	store, err := storage.NewPostgresStore()
 	if err != nil {
