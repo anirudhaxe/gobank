@@ -30,10 +30,12 @@ services:
       - 5432:5432
     environment:
       POSTGRES_PASSWORD: gobank
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
 
-  nocodb:
-    container_name: nocodb
-    image: nocodb/nocodb
-    restart: always
-    ports:
-      - 8080:8080
+  # nocodb:
+  #   container_name: nocodb
+  #   image: nocodb/nocodb
+  #   restart: always
+  #   ports:
+  #     - 8080:8080
